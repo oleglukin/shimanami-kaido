@@ -16,6 +16,6 @@ public class SignalHandler {
     
     @Scheduled(fixedRate = 5000)
 	public void reportCurrentTime() {
-		System.out.printf("The time is now {}", dateFormat.format(new Date()) + "t'" + exchange + "'");
+		System.out.printf("The time is now " + dateFormat.format(new Date()) + "\t'" + exchange + "'\n");
 	}
 }

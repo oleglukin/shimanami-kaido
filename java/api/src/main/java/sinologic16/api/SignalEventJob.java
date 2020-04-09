@@ -31,70 +31,77 @@ public class SignalEventJob implements Serializable {
     @Value("${spark.master}")
     private String sparkMaster;
 
+
     @PostConstruct
     public void start() {
-
         String appName = this.getClass().getSimpleName();
-        SparkSession spark = SparkSession.builder().master(sparkMaster).appName(appName).getOrCreate();
-        spark.sparkContext().setLogLevel("ERROR");
 
-        Option<String> webUIUrl = spark.sparkContext().uiWebUrl();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SparkSession spark = SparkSession.builder().master(sparkMaster).appName(appName).getOrCreate();
+                spark.sparkContext().setLogLevel("ERROR");
 
-        System.out.println("Initiated Spark context."
-            + "\nWebUI: " + webUIUrl.get()
-            + "\nApp name: " + appName
-            + "\nReading data from folder '" + inputFolder + "'");
-            
+                Option<String> webUIUrl = spark.sparkContext().uiWebUrl();
 
-        Dataset<String> ds = spark.readStream().format("json").option("inferSchema", "true").text(inputFolder).as(Encoders.STRING());
-        
-        StructType schema = new StructType()
-            .add("id_sample", DataTypes.StringType, false)
-            .add("num_id", DataTypes.StringType, true)
-            .add("id_location", DataTypes.StringType, true)
-            .add("id_signal_par", DataTypes.StringType, true)
-            .add("id_detected", DataTypes.StringType, true)
-            .add("id_class_det", DataTypes.StringType, true);
+                System.out.println("Initiated Spark context."
+                    + "\nWebUI: " + webUIUrl.get()
+                    + "\nApp name: " + appName
+                    + "\nReading data from folder '" + inputFolder + "'");
+                    
 
-        Dataset<Row> parsed = ds.withColumn("jsonData", functions.from_json(functions.col("value"),schema)).select("jsonData.*");
+                Dataset<String> ds = spark.readStream().format("json").option("inferSchema", "true").text(inputFolder).as(Encoders.STRING());
+                
+                StructType schema = new StructType()
+                    .add("id_sample", DataTypes.StringType, false)
+                    .add("num_id", DataTypes.StringType, true)
+                    .add("id_location", DataTypes.StringType, true)
+                    .add("id_signal_par", DataTypes.StringType, true)
+                    .add("id_detected", DataTypes.StringType, true)
+                    .add("id_class_det", DataTypes.StringType, true);
 
-        parsed.printSchema();
+                Dataset<Row> parsed = ds.withColumn("jsonData", functions.from_json(functions.col("value"),schema)).select("jsonData.*");
 
-        Dataset<Row> grouped = parsed.groupBy("id_location", "id_detected").count();
-        
-        grouped.printSchema();
+                System.out.println("Parsed data schema:");
+                parsed.printSchema();
 
-        
-        grouped.writeStream().foreach(
-            new ForeachWriter<Row>() {
-                private static final long serialVersionUID = 1L;
+                Dataset<Row> grouped = parsed.groupBy("id_location", "id_detected").count();
+                
+                System.out.println("Grouped data schema:");
+                grouped.printSchema();
 
-                @Override
-                public boolean open(long partitionId, long version) {
-                    return true; // Open connection
+                
+                grouped.writeStream().foreach(
+                    new ForeachWriter<Row>() {
+                        private static final long serialVersionUID = 1L;
+
+                        @Override
+                        public boolean open(long partitionId, long version) {
+                            return true; // Open connection
+                        }
+
+                        @Override public void process(Row e) {
+                            // Write string to connection
+                            String idLocation = e.getAs("id_location");
+                            String idDetected = e.getAs("id_detected");
+                            long count = e.getAs("count");
+                            System.out.println("id_location: " + idLocation
+                                + "\tidDetected: " + idDetected
+                                + "\tcount: " + count);
+                        }
+
+                        @Override public void close(Throwable errorOrNull) {} // Close the connection
+                    }
+                ).outputMode(OutputMode.Update())
+                .start();
+
+
+                try {
+                    spark.streams().awaitAnyTermination();
+                } catch (StreamingQueryException e) {
+                    System.out.println(e.getMessage());
                 }
-
-                @Override public void process(Row e) {
-                    // Write string to connection
-                    String idLocation = e.getAs("id_location");
-                    String idDetected = e.getAs("id_detected");
-                    long count = e.getAs("count");
-                    System.out.println("id_location: " + idLocation
-                        + "\tidDetected: " + idDetected
-                        + "\tcount: " + count);
-                }
-
-                @Override public void close(Throwable errorOrNull) {} // Close the connection
             }
-        ).outputMode(OutputMode.Update())
-        .start();
-
-
-        try {
-            spark.streams().awaitAnyTermination();
-        } catch (StreamingQueryException e) {
-            System.out.println(e.getMessage());
-        }
-
+        }).start();
     }
 }

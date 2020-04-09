@@ -2,6 +2,8 @@ package sinologic16.sparkjobs;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.ForeachWriter;
@@ -12,11 +14,15 @@ import org.apache.spark.sql.streaming.OutputMode;
 import org.apache.spark.sql.streaming.StreamingQueryException;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructType;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class SignalEventJob implements Serializable {
 
     private static final long serialVersionUID = -1389385671736977959L;
 
+    @PostConstruct
     public void start() {
 
         String fileName = "input/events.json";

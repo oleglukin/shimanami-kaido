@@ -14,7 +14,10 @@ import org.apache.spark.sql.streaming.OutputMode;
 import org.apache.spark.sql.streaming.StreamingQueryException;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import scala.Option;
 
 
 @Component
@@ -22,16 +25,28 @@ public class SignalEventJob implements Serializable {
 
     private static final long serialVersionUID = -1389385671736977959L;
 
+    @Value("${inputfolder}")
+    private String inputFolder;
+
+    @Value("${spark.master}")
+    private String sparkMaster;
+
     @PostConstruct
     public void start() {
 
-        String folder = "/home/oleg/code/github/oleglukin/shimanami-kaido/java/api/input/";
-
-        SparkSession spark = SparkSession.builder().master("local").appName("SignalEventJob").getOrCreate();
+        String appName = this.getClass().getSimpleName();
+        SparkSession spark = SparkSession.builder().master(sparkMaster).appName(appName).getOrCreate();
         spark.sparkContext().setLogLevel("ERROR");
-        System.out.println("SignalEventJob. Reading from folder '" + folder + "'");
 
-        Dataset<String> ds = spark.readStream().format("json").option("inferSchema", "true").text(folder).as(Encoders.STRING());
+        Option<String> webUIUrl = spark.sparkContext().uiWebUrl();
+
+        System.out.println("Initiated Spark context."
+            + "\nWebUI: " + webUIUrl.get()
+            + "\nApp name: " + appName
+            + "\nReading data from folder '" + inputFolder + "'");
+            
+
+        Dataset<String> ds = spark.readStream().format("json").option("inferSchema", "true").text(inputFolder).as(Encoders.STRING());
         
         StructType schema = new StructType()
             .add("id_sample", DataTypes.StringType, false)

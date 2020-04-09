@@ -1,4 +1,4 @@
-package sinologic16.sparkjobs;
+package sinologic16.api;
 
 import java.io.Serializable;
 
@@ -25,13 +25,13 @@ public class SignalEventJob implements Serializable {
     @PostConstruct
     public void start() {
 
-        String fileName = "input/events.json";
+        String folder = "/home/oleg/code/github/oleglukin/shimanami-kaido/java/api/input/";
 
-        SparkSession spark = SparkSession.builder().master("local").appName("Chapter06").getOrCreate();
+        SparkSession spark = SparkSession.builder().master("local").appName("SignalEventJob").getOrCreate();
         spark.sparkContext().setLogLevel("ERROR");
-        System.out.println("Chapter03. Reading from " + fileName);
+        System.out.println("SignalEventJob. Reading from folder '" + folder + "'");
 
-        Dataset<String> ds = spark.readStream().format("json").option("inferSchema", "true").text("input/").as(Encoders.STRING());
+        Dataset<String> ds = spark.readStream().format("json").option("inferSchema", "true").text(folder).as(Encoders.STRING());
         
         StructType schema = new StructType()
             .add("id_sample", DataTypes.StringType, false)

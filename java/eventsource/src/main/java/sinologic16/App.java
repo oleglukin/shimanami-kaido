@@ -1,55 +1,88 @@
 package sinologic16;
 
 import java.io.*;
+import java.util.Properties;
 import java.util.Random;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 
 public class App 
 {
+    private static final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .build();
+
+
     public static void main( String[] args )
     {
         int events = 16;
         int maxLocations = 3;
-        String fileName = "input/events.json";
+        String apiEndpoint = "http://localhost:8080/api/";
+
+        try (InputStream input = App.class.getClassLoader().getResourceAsStream("config.properties")) {
+            Properties prop = new Properties();
+
+            if (input == null) {
+                System.out.println("Unable to find config.properties");
+                return;
+            }
+
+            prop.load(input);
+
+            events = tryParseInt(prop.getProperty("events"), events);
+            maxLocations = tryParseInt(prop.getProperty("maxLocations"), maxLocations);
+
+            String apiEndpointProperty = prop.getProperty("appName");
+            if (apiEndpointProperty != null) apiEndpoint = apiEndpointProperty;
+
+        } catch (IOException ex) {
+            System.out.printf("Error reading properties: {}", ex.getMessage());
+        }
+
 
         String[] locations = getLocations(maxLocations);
 
         System.out.println("Generating " + events + " events for " + locations.length + " locations");
-        Writer writer = null;
 
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(fileName), "utf-8"));
-            
-            SignalEvent e;
-            
-
             for (int i = 0; i < events; i++) {
 
-                e = new SignalEvent();
-                e.id_sample = "f" + getRandomInt(i + 1, i * 3 + 19) + getRandomString(3);
-                e.num_id = getRandomString(3) + "#" + getRandomString(2) + getRandomInt(120, 995);
+                String json = generateRandomEvent(locations, i);
 
-                e.id_location = locations[getRandomInt(0, locations.length-1)];
-                
-                e.id_signal_par = "0x" + getRandomString(2) + getRandomInt(17, 99) + getRandomString(2);
-                if (getRandomInt(1, 99) % 2 == 0) {
-                    e.id_detected = "None";
-                } else {
-                    e.id_detected = "Nan";
-                }
-                e.id_class_det = "req" + getRandomInt(16, 94);
+                HttpRequest request = HttpRequest.newBuilder()
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .uri(URI.create(apiEndpoint))
+                    .setHeader("User-Agent", "Events Source")
+                    .header("Content-Type", "application/json")
+                    .build();
 
-                String json = getJson(e);
-                if (i < (events - 1)) json = json + "\n";
-                writer.write(json);
-
+                httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             }
-        } catch (IOException ex) {
-            System.out.println(ex); // Report
-        } finally {
-            try {writer.close();} catch (Exception ex) {/*ignore*/}
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
+    }
+
+
+    private static String generateRandomEvent(String[] locations, int i) {
+        SignalEvent e = new SignalEvent();
+
+        e.id_sample = "f" + getRandomInt(i + 1, i * 3 + 19) + getRandomString(3);
+        e.num_id = getRandomString(3) + "#" + getRandomString(2) + getRandomInt(120, 995);
+
+        e.id_location = locations[getRandomInt(0, locations.length-1)];
+        
+        e.id_signal_par = "0x" + getRandomString(2) + getRandomInt(17, 99) + getRandomString(2);
+        if (getRandomInt(1, 99) % 2 == 0) {
+            e.id_detected = "None";
+        } else {
+            e.id_detected = "Nan";
+        }
+        e.id_class_det = "req" + getRandomInt(16, 94);
+        return getJson(e);
     }
 
 
@@ -95,5 +128,15 @@ public class App
         sb.append("\"id_class_det\":\"" + e.id_class_det + "\"");
         sb.append("}");
         return sb.toString();
+    }
+
+
+    private static int tryParseInt(String value, int defaultVal) {
+        try {
+            if (value == null) value = "";
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return defaultVal;
+        }
     }
 }

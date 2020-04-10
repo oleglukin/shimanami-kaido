@@ -51,9 +51,9 @@ public class SignalEventJob {
             if (inputFolderProperty != null)
                 inputFolder = inputFolderProperty;
 
-            String apiEndpointProperty = prop.getProperty("apiEndpoint");
-            if (apiEndpointProperty != null)
-                apiEndpoint = apiEndpointProperty;
+            // String apiEndpointProperty = prop.getProperty("apiEndpoint");
+            // if (apiEndpointProperty != null)
+            //     apiEndpoint = apiEndpointProperty;
 
         } catch (IOException ex) {
             System.out.printf("Error readin properties: {}", ex.getMessage());

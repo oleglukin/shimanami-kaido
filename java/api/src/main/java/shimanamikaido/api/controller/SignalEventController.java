@@ -1,5 +1,6 @@
 package shimanamikaido.api.controller;
 
+import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
@@ -20,9 +21,24 @@ public class SignalEventController {
     @Resource(name = "signalHandler")
     public SignalHandler signalHandler;
 
-
     // maps id_location to aggregation of counts (functional, failed)
     private ConcurrentHashMap<String, LocationAggregation> map = new ConcurrentHashMap<String, LocationAggregation>();
+
+    /**
+     * Get list of all locations that have aggregations
+     */
+    @RequestMapping("api/")
+    public String getLocations() {
+        StringBuilder response = new StringBuilder();
+
+        Enumeration<String> enu = map.keys();
+  
+        while (enu.hasMoreElements()) { 
+            response.append(enu.nextElement() + "\n");
+        } 
+
+        return response.toString();
+    }
 
 
     /**

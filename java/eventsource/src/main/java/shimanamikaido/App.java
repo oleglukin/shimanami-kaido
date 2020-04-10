@@ -50,6 +50,12 @@ public class App
 
         System.out.println("Generating " + events + " events for " + locations.length + " locations. Max interval between requests: " + maxIntervalMs + " ms.");
 
+        System.out.println("Locations:");
+        for (int i = 0; i < locations.length; i++) {
+            System.out.println(locations[i]);
+        }
+
+
         try {
             for (int i = 0; i < events; i++) {
 
@@ -72,10 +78,7 @@ public class App
             System.out.println(ex.getMessage());
         }
 
-        System.out.println("\nFinished. Locations:");
-        for (int i = 0; i < locations.length; i++) {
-            System.out.println(locations[i]);
-        }
+        System.out.println("\nFinished posting all events");
     }
 
 

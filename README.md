@@ -1,7 +1,10 @@
 # shimanami-kaido
-Streaming data analysis
+Streaming data analysis.
+This repository cantains a Spark client/job and an API that ingests data into it and outputs results to its users.
+The application code can be used for education purpose.
 
 
 
-## Things to Consider Changing
-- Implement Spark job as a separate project (not part of the API) and use `spark-submit` to deploy it to the Spark cluster.
+## Things to improve / Consider Changing
+- Ingest evens through TCP socket connection or use Kafka. Currently it reads events from  files in a folder
+

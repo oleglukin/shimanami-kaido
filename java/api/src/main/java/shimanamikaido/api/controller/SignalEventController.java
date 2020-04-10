@@ -27,16 +27,12 @@ public class SignalEventController {
     /**
      * Get list of all locations that have aggregations
      */
-    @RequestMapping("api/locations")
+    @RequestMapping("api/all")
     public String getLocations() {
         StringBuilder response = new StringBuilder();
 
-        Enumeration<String> enu = map.keys();
+        map.forEach((k, v) -> response.append(k+ ". " + "Functional: " + v.getFunctional() + ", failed: " + v.getFailed() + "\n"));
   
-        while (enu.hasMoreElements()) { 
-            response.append(enu.nextElement() + "\n");
-        } 
-
         return response.toString();
     }
 

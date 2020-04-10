@@ -71,6 +71,11 @@ public class App
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
+
+        System.out.println("\nFinished. Locations:");
+        for (int i = 0; i < locations.length; i++) {
+            System.out.println(locations[i]);
+        }
     }
 
 

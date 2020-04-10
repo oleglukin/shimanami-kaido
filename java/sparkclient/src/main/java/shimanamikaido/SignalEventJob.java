@@ -97,7 +97,7 @@ public class SignalEventJob
                     String idDetected = e.getAs("id_detected");
                     long count = e.getAs("count");
                     System.out.println("id_location: " + idLocation
-                        + "\tidDetected: " + idDetected
+                        + "\tid_detected: " + idDetected
                         + "\tcount: " + count);
                 }
 

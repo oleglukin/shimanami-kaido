@@ -33,7 +33,7 @@ public class SignalEventJob {
             Properties prop = new Properties();
 
             if (input == null) {
-                System.out.println("Sorry, unable to find config.properties");
+                System.out.println("Unable to find config.properties");
                 return;
             }
 

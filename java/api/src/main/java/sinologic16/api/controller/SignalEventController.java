@@ -18,14 +18,14 @@ public class SignalEventController {
 
     @RequestMapping("api/")
     public String get() {
-        String response = "From SignalEventController.get()" + signalHandler.exchange;
-        signalHandler.exchange = "exchange is get";
+        String response = "From SignalEventController.get()";
 
         return response;
     }
 
     @PostMapping("api/")
     SignalEvent newSignalEvent(@RequestBody SignalEvent newSignalEvent) {
+        signalHandler.addEvent(newSignalEvent);
         return newSignalEvent;
     }
 }

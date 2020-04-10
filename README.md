@@ -33,8 +33,11 @@ There are 3 components (applications) in this repository:
 
 ### 1. Sparkclient
 This application contains Spark driver program and events stream processing logic (aggregation). It has been tested in local mode only.
+
 It ingests data from a local folder (configurable within the properties file). The folder is monitored for new files and the new files are ingested as a stream.
+
 This data should have a schema matching signal event to be parsed (see data model above).
+
 Parsed data is then grouped by `id_location` and `id_detected` to find total number (count) of functional and failed events for each location.
 Once grouped the data is being sent to an HTTP endpoint (see API methods below).
 

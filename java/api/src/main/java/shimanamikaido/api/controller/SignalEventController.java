@@ -1,6 +1,5 @@
 package shimanamikaido.api.controller;
 
-import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;

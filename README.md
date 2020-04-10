@@ -17,8 +17,16 @@ Parsed data is then grouped by `id_location` and `id_detected` to find count of 
 Once grouped the data is being sent to HTTP endpoint (see API methods below).
 
 ### API
+Methods:
+- `newSignalEvent` - accept new signal event and process it: accumulate events into batches and then dump into a file
+- `get` - get aggregation results by location
+- `getLocations` - get aggregations for all known locations
+- `newAggregation` - accept new aggregation, add/update in memory to make it available for API users
+
+There is a class called `SignalHandler`. It's purpose is to accumulate new signals from controller and dump them to a text file once in a while.
 
 ### EventSource
+This is only for testing. Create a number of random events and send them to APIs HTTP endpoint.
 
 ## Things to Improve / Consider Changing
 - Ingest evens through TCP socket connection or use Kafka. Currently it reads events from  files in a folder

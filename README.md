@@ -18,7 +18,7 @@ Signal schema:
 }
 ```
 
-The task is to find current number of both functional and failed (`id_detected`) signals per location (`id_location`).
+The basic requirement is to find current number of both functional and failed (`id_detected`) signals per location (`id_location`).
 
 
 ## Components
@@ -34,16 +34,16 @@ There are 3 components (applications) in this repository:
 ### 1. Sparkclient
 This application contains Spark driver program and events stream processing logic (aggregation). It has been tested in local mode only.
 It ingests data from a local folder (configurable within the properties file). The folder is monitored for new files and the new files are ingested as a stream.
-This data should have a schema matching signal event to be parsed (see data model below).
-Parsed data is then grouped by `id_location` and `id_detected` to find count of functional and failed events for each location.
-Once grouped the data is being sent to HTTP endpoint (see API methods below).
+This data should have a schema matching signal event to be parsed (see data model above).
+Parsed data is then grouped by `id_location` and `id_detected` to find total number (count) of functional and failed events for each location.
+Once grouped the data is being sent to an HTTP endpoint (see API methods below).
 
 ### 2. API
 Methods:
 - `newSignalEvent` - accept new signal event and process it: accumulate events into batches and then dump into a file
 - `get` - get aggregation results by location
 - `getLocations` - get aggregations for all known locations
-- `newAggregation` - accept new aggregation, add/update in memory to make it available for API users
+- `newAggregation` - accept new aggregation, add/update in memory to make it available for API clients
 
 There is a class called `SignalHandler`. It's purpose is to accumulate new signals from controller and dump them to a text file once in a while.
 
@@ -53,5 +53,5 @@ This is only for testing. Create a number of random events and send them to APIs
 
 ## Things to Improve / Consider Changing
 - Ingest evens through TCP socket connection or use Kafka. Currently it reads events from  files in a folder
-- Probably would be better to output aggregation results using Kafka or other queue
+- Probably would be better to output aggregation results to Kafka or other queue as well
 - Test and make sure that sparkclient can work with Spark cluster (standalone or YARN/Mesos)

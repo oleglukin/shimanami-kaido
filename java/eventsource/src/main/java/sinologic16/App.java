@@ -1,6 +1,7 @@
 package sinologic16;
 
 import java.io.*;
+import java.util.concurrent.TimeUnit;
 import java.util.Properties;
 import java.util.Random;
 import java.net.URI;
@@ -20,6 +21,7 @@ public class App
     {
         int events = 16;
         int maxLocations = 3;
+        int maxIntervalMs = 0;
         String apiEndpoint = "http://localhost:8080/api/";
 
         try (InputStream input = App.class.getClassLoader().getResourceAsStream("config.properties")) {
@@ -34,6 +36,7 @@ public class App
 
             events = tryParseInt(prop.getProperty("events"), events);
             maxLocations = tryParseInt(prop.getProperty("maxLocations"), maxLocations);
+            maxIntervalMs = tryParseInt(prop.getProperty("maxIntervalMs"), maxIntervalMs);
 
             String apiEndpointProperty = prop.getProperty("appName");
             if (apiEndpointProperty != null) apiEndpoint = apiEndpointProperty;
@@ -51,6 +54,10 @@ public class App
             for (int i = 0; i < events; i++) {
 
                 String json = generateRandomEvent(locations, i);
+
+                int delay = getRandomInt(0, maxIntervalMs);
+                if (delay > 0) TimeUnit.MILLISECONDS.sleep(delay);
+
 
                 HttpRequest request = HttpRequest.newBuilder()
                     .POST(HttpRequest.BodyPublishers.ofString(json))

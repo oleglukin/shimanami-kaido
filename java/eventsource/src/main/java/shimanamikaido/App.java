@@ -48,7 +48,7 @@ public class App
 
         String[] locations = getLocations(maxLocations);
 
-        System.out.println("Generating " + events + " events for " + locations.length + " locations");
+        System.out.println("Generating " + events + " events for " + locations.length + " locations. Max interval between requests: " + maxIntervalMs + " ms.");
 
         try {
             for (int i = 0; i < events; i++) {

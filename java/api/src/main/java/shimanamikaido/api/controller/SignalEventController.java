@@ -28,4 +28,9 @@ public class SignalEventController {
         signalHandler.addEvent(newSignalEvent);
         return newSignalEvent;
     }
+
+    @PostMapping("api/updateaggregation")
+    void newAggregation() {
+        // TODO implement
+    }
 }

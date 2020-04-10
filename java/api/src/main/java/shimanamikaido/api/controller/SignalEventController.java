@@ -27,7 +27,7 @@ public class SignalEventController {
     /**
      * Get list of all locations that have aggregations
      */
-    @RequestMapping("api/")
+    @RequestMapping("api/locations")
     public String getLocations() {
         StringBuilder response = new StringBuilder();
 

@@ -1,4 +1,4 @@
-package sinologic16.api;
+package shimanamikaido.api;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import sinologic16.api.model.SignalEvent;
+import shimanamikaido.api.model.SignalEvent;
 
 @Component
 public class SignalHandler {

@@ -1,4 +1,4 @@
-package sinologic16.api.controller;
+package shimanamikaido.api.controller;
 
 import javax.annotation.Resource;
 
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import sinologic16.api.model.SignalEvent;
-import sinologic16.api.SignalHandler;
+import shimanamikaido.api.model.SignalEvent;
+import shimanamikaido.api.SignalHandler;
 
 @RestController
 public class SignalEventController {

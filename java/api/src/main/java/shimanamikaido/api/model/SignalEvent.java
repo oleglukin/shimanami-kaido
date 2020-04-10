@@ -1,4 +1,4 @@
-package sinologic16.api.model;
+package shimanamikaido.api.model;
 
 import lombok.Getter;
 import lombok.Setter;

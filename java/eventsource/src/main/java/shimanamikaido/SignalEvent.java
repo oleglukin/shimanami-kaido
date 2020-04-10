@@ -1,4 +1,4 @@
-package sinologic16;
+package shimanamikaido;
 
 public class SignalEvent {
     public String id_sample; // item identifier (76rtw)

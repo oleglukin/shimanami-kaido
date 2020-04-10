@@ -1,4 +1,4 @@
-package sinologic16;
+package shimanamikaido;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;

@@ -1,4 +1,4 @@
-package sinologic16.api;
+package shimanamikaido.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

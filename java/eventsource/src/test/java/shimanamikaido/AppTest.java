@@ -1,4 +1,4 @@
-package sinologic16;
+package shimanamikaido;
 
 import static org.junit.Assert.assertTrue;
 

@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import shimanamikaido.api.SignalHandler;
 import shimanamikaido.api.model.LocationAggregation;
 import shimanamikaido.api.model.SignalEvent;
-import shimanamikaido.api.SignalHandler;
 
 @RestController
 public class SignalEventController {
@@ -33,6 +33,18 @@ public class SignalEventController {
         map.forEach((k, v) -> response.append(k+ ". " + "Functional: " + v.getFunctional() + ", failed: " + v.getFailed() + "\n"));
   
         return response.toString();
+    }
+
+
+    /**
+     * Summarise all counts (failed and functional) of all locations to get total number of events processed
+     */
+    @RequestMapping("api/eventscount")
+    public int getEventsCount() {
+        int result = map.values().stream().mapToInt(v -> 
+            v.getFailed() + v.getFunctional()
+        ).sum();
+        return result;
     }
 
 

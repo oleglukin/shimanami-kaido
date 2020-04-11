@@ -55,6 +55,9 @@ public class App
             System.out.println(locations[i]);
         }
 
+        if (events > 1000) {
+            System.out.println("Events generation progress x1000:");
+        }
 
         try {
             for (int i = 0; i < events; i++) {
@@ -73,6 +76,10 @@ public class App
                     .build();
 
                 httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (events > 1000 && i != 0 && i%1000 == 0) {
+                    System.out.print(i/1000 + " ");
+                }
             }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

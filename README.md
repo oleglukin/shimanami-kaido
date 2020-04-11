@@ -48,6 +48,7 @@ Methods:
 - `getLocations` - get aggregations for all known locations
 - `newAggregation` - accept new aggregation, add/update in memory to make it available for API clients
 - `clearAllAggregations` - remove all aggregation results from memory (reset / start over)
+- `getEventsCount` - get total number of events processed
 
 There is a class called `SignalHandler`. It's purpose is to accumulate new signals from controller and dump them to a text file once in a while.
 

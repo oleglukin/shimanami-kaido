@@ -2,12 +2,14 @@ package shimanamikaido;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.SimpleDateFormat;
 
 
 public class App 
@@ -23,6 +25,10 @@ public class App
         int maxLocations = 3;
         int maxIntervalMs = 0;
         String apiEndpoint = "http://localhost:8080/api/";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+        String now = dateFormat.format(new Date());
+        
 
         try (InputStream input = App.class.getClassLoader().getResourceAsStream("config.properties")) {
             Properties prop = new Properties();
@@ -48,7 +54,7 @@ public class App
 
         String[] locations = getLocations(maxLocations);
 
-        System.out.println("Generating " + events + " events for " + locations.length + " locations. Max interval between requests: " + maxIntervalMs + " ms.");
+        System.out.println(now + "\nGenerating " + events + " events for " + locations.length + " locations. Max interval between requests: " + maxIntervalMs + " ms.");
 
         System.out.println("Locations:");
         for (int i = 0; i < locations.length; i++) {
@@ -85,7 +91,8 @@ public class App
             System.out.println(ex.getMessage());
         }
 
-        System.out.println("\nFinished posting all events");
+        now = dateFormat.format(new Date());
+        System.out.println("\n"+now+"\nFinished posting all events");
     }
 
 

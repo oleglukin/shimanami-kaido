@@ -133,7 +133,5 @@ public class SignalEventJob {
         } catch (StreamingQueryException e) {
             System.out.println(e.getMessage());
         }
-
-
     }
 }

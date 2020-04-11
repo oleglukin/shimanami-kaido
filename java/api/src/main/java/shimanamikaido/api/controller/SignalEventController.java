@@ -88,4 +88,13 @@ public class SignalEventController {
 
         map.put(idLocation, agg);
     }
+
+
+    /**
+     * Remove all aggregation results from memory (reset)
+     */
+    @RequestMapping("api/clearallaggregations")
+    public void clearAllAggregations() {
+        map.clear();
+    }
 }
